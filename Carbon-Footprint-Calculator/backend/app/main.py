@@ -1,9 +1,9 @@
 from fastapi import FastAPI,HTTPException
-from classes.userclass import User
-from classes.security import hash_password,verify_password,encode_response,decode_response
-from classes.c02class import individual,application
-from classes.database import users_collection as UserTable,history_collection as historyTable
-from ai.prediction import predict_individual_co2,predict_app_co2
+from app.classes.userclass import User
+from app.classes.security import hash_password,verify_password,encode_response,decode_response
+from app.classes.c02class import individual,application
+from app.classes.database import users_collection as UserTable,history_collection as historyTable
+from app.ai.prediction import predict_individual_co2,predict_app_co2
 from bson import ObjectId
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -172,5 +172,6 @@ async def delete_user(user_id: str):
 
     if delete_result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="User not found")
+
 
     return {"message": "User deleted successfully", "user_id": encode_response(decoded_user_id)}
