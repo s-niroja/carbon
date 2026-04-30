@@ -27,8 +27,6 @@ def roor():
 @app.post("/createuser")
 async def createuser(user:User):
     user_dict = User.dict(user)
-    user_dict["phone"] = encode_response(user_dict["phone"])
-    user_dict["password"] = hash_password(user_dict["password"])
     user_dict["role"] = "user"
     result = UserTable.insert_one(user_dict)
 
@@ -39,13 +37,10 @@ async def createuser(user:User):
 #login
 @app.post("/login")
 async def login(number,password):
-    User = await UserTable.find_one({"phone":encode_response(number)})
+    User = await UserTable.find_one({"phone":number})
 
     if not User:
         raise HTTPException(status_code=404, detail="user not found")
-    
-    if not verify_password(password,User['password']):
-        raise HTTPException(status_code=401, detail="invalid credentials")
     
     return({"message":"login sucessfull","user_id":encode_response(str(User["_id"])),"role":User["role"]})
 
